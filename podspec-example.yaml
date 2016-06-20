@@ -1,0 +1,19 @@
+  spec:
+      containers:
+      - image: registry-1.docker.io/thirtyx/secretrestart:0.1.0
+        imagePullPolicy: Always
+        name: secretrestart
+        env:
+        - name: SECRET_NAME
+            value: "ecr-key"
+            # We always receive an event when the pod comes up, so we want to ignore it
+        - name: IGNORE_COUNT
+            value: "1"
+        - name: POD_NAME
+            valueFrom:
+            fieldRef:
+                fieldPath: metadata.name
+        - name: POD_NAMESPACE
+            valueFrom:
+            fieldRef:
+                fieldPath: metadata.namespace
