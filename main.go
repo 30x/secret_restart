@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"math/big"
 	"math/rand"
+	"net"
 	"os"
 	"time"
 
@@ -38,6 +40,18 @@ func main() {
 		log.Fatal("You must specify a valid integer for the IGNORE_COUNT value")
 	}
 
+	shutdownTimespanString := os.Getenv("SHUTDOWN_TIMESPAN")
+
+	if shutdownTimespanString == "" {
+		log.Fatal("You must specifiy the SHUTDOWN_TIMESPAN environment variable")
+	}
+
+	shutdownTimespan, err := strconv.Atoi(shutdownTimespanString)
+
+	if err != nil {
+		log.Fatal("You must specify a valid integer for the SHUTDOWN_TIMESPAN value")
+	}
+
 	podNamespace := os.Getenv("POD_NAMESPACE")
 
 	if podNamespace == "" {
@@ -50,6 +64,12 @@ func main() {
 		log.Fatal("You must specifiy the POD_NAME environment variable")
 	}
 
+	podIP := os.Getenv("POD_IP")
+
+	if podIP == "" {
+		log.Fatal("You must specifiy the POD_IP environment variable")
+	}
+
 	log.Print("Connecting to kubernetes")
 
 	client, err := kubernetes.GetClient()
@@ -60,8 +80,9 @@ func main() {
 
 	emitter := listener.CreateK8sSecretEmitter(podNamespace)
 
-	seed := time.Now().Unix()
-	rand.Seed(seed)
+	ipvSeed := ip4toInt(podIP)
+
+	rand.Seed(ipvSeed)
 
 	log.Print("Started watcher")
 
@@ -106,7 +127,7 @@ func main() {
 		}
 
 		//add a 10 minute variance to our shutdown timer
-		waitTime := rand.Intn(60)
+		waitTime := rand.Intn(shutdownTimespan)
 
 		log.Printf("Shutting down pod in %d seconds", waitTime)
 
@@ -125,4 +146,13 @@ func main() {
 		//we deliberately let this loop back to the top.  If we're a sidecar, this will terminate when the pod terminates
 
 	}
+}
+
+func ip4toInt(ipv4Ip string) int64 {
+
+	ipv4Address := net.ParseIP(ipv4Ip)
+
+	IPv4Int := big.NewInt(0)
+	IPv4Int.SetBytes(ipv4Address.To4())
+	return IPv4Int.Int64()
 }

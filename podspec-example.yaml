@@ -9,6 +9,8 @@
             # We always receive an event when the pod comes up, so we want to ignore it
         - name: IGNORE_COUNT
             value: "1"
+        - name: SHUTDOWN_TIMESPAN
+            value: "300"
         - name: POD_NAME
             valueFrom:
             fieldRef:
@@ -17,3 +19,9 @@
             valueFrom:
             fieldRef:
                 fieldPath: metadata.namespace
+         - name: POD_IP
+            valueFrom:
+            fieldRef:
+                fieldPath: status.podIP
+            
+
