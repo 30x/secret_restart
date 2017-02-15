@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: secretrestart
+  labels:
+    name: secretrestart
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        name: secretrestart
+    spec:
+      containers:
+      - image: registry-1.docker.io/thirtyx/secretrestart:0.2.0
+        imagePullPolicy: Always
+        name: secretrestart
+        env:
+        - name: SECRET_NAME
+          value: "ecr-key"
+        - name: SHUTDOWN_TIMESPAN
+          value: "300"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+            
+
