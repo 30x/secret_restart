@@ -1,17 +1,12 @@
 package: github.com/30x/secretrestart
 import:
-- package: k8s.io/kubernetes
-  version: 1.2.0
-  subpackages:
-  - pkg/client/unversioned
-  - pkg/client/api
-- package: k8s.io/kubernetes
-  version: 1.2.0
-  subpackages:
-  - libcontainer/configs
-
-
-# - package: github.com/golang/glog
-#   vcs: git
-#   version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
-  
+- package: k8s.io/client-go
+  version: release-2.0
+- package: gopkg.in/yaml.v2
+  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
+  repo: https://github.com/go-yaml/yaml.git
+  vcs: git
+- package: gopkg.in/inf.v0
+  version: 3887ee99ecf07df5b447e9b00d9c0b2adaa9f3e4
+  repo: https://github.com/go-inf/inf.git
+  vcs: git

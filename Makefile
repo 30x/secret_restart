@@ -1,6 +1,6 @@
 #Format is MAJOR . MINOR . PATCH
 
-IMAGE_VERSION=0.1.1
+IMAGE_VERSION=0.2.0
 
 
 test-build-and-package: test-source build-and-package
@@ -24,7 +24,7 @@ push-to-local:
 	docker push localhost:5000/thirtyx/secretrestart
 
 push-to-hub:
-	docker tag -f thirtyx/secretrestart thirtyx/secretrestart:$(IMAGE_VERSION)
+	docker tag thirtyx/secretrestart thirtyx/secretrestart:$(IMAGE_VERSION)
 	docker push thirtyx/secretrestart:$(IMAGE_VERSION)
 
 deploy-to-kube:
